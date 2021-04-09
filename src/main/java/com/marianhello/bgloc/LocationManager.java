@@ -22,10 +22,7 @@ public class LocationManager {
     private Context mContext;
     private static LocationManager mLocationManager;
 
-    public static final String[] PERMISSIONS = {
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
-    };
+    public static final String[] PERMISSIONS = getRequiredPermissions();
 
     private LocationManager(Context context) {
         mContext = context;
@@ -38,6 +35,22 @@ public class LocationManager {
             mLocationManager = new LocationManager(context.getApplicationContext());
         }
         return mLocationManager;
+    }
+    
+    private static String[] getRequiredPermissions() {
+        if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            return new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            };
+        }
+        else {
+            return new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            };
+        }
     }
 
     public Promise<Location> getCurrentLocation(final int timeout, final long maximumAge, final boolean enableHighAccuracy) {
